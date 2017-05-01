@@ -12,6 +12,9 @@ import offlinePage from './middleware/offlinePage';
 import errorHandlers from './middleware/errorHandlers';
 import config from '../config';
 
+global.navigator = global.navigator || {};
+global.navigator.userAgent = global.navigator.userAgent || 'all';
+
 // Create our express based server.
 const app = express();
 
@@ -50,7 +53,8 @@ app.use(...errorHandlers);
 
 // Create an http listener for our express app.
 const listener = app.listen(config('port'), () =>
-  console.log(`Server listening on port ${config('port')}`));
+  console.log(`Server listening on port ${config('port')}`),
+);
 
 // We export the listener as it will be handy for our development hot reloader,
 // or for exposing a general extension layer for application customisations.

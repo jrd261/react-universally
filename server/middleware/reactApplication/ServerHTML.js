@@ -47,6 +47,7 @@ function ServerHTML(props) {
     <script nonce={nonce} type="text/javascript" dangerouslySetInnerHTML={{ __html: body }} />
   );
 
+  // iterate over helment
   const headerElements = removeNil([
     ...ifElse(helmet)(() => helmet.title.toComponent(), []),
     ...ifElse(helmet)(() => helmet.base.toComponent(), []),

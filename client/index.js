@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 
-import React from 'react';
+import React, { Component } from 'react';
 import { render } from 'react-dom';
 import BrowserRouter from 'react-router-dom/BrowserRouter';
 import asyncBootstrapper from 'react-async-bootstrapper';
@@ -12,6 +12,12 @@ import configureStore from '../shared/redux/configureStore';
 import './polyfills';
 
 import ReactHotLoader from './components/ReactHotLoader';
+
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import createPalette from 'material-ui/styles/palette';
+import createMuiTheme from 'material-ui/styles/theme';
+import { green, red } from 'material-ui/styles/colors';
+
 import DemoApp from '../shared/components/DemoApp';
 
 // Get the DOM Element that will host our React application.
@@ -39,31 +45,54 @@ const rehydrateState = window.__JOBS_REHYDRATE_STATE__;
 /**
  * Renders the given React Application component.
  */
-function renderApp(TheApp) {
+class renderApp extends Component {
+  constructor(TheApp) {
+    super();
+    this.TheApp = TheApp;
+  }
   // Firstly, define our full application component, wrapping the given
   // component app with a browser based version of react router.
-  const app = (
-    <ReactHotLoader>
-      <AsyncComponentProvider rehydrateState={asyncComponentsRehydrateState}>
-        <JobProvider rehydrateState={rehydrateState}>
-          <Provider store={store}>
-            <BrowserRouter forceRefresh={!supportsHistory}>
-              <TheApp />
-            </BrowserRouter>
-          </Provider>
-        </JobProvider>
-      </AsyncComponentProvider>
-    </ReactHotLoader>
-  );
+  app() {
+    function createStyleManager() {
+      return MuiThemeProvider.createDefaultContext({
+        theme: createMuiTheme({
+          palette: createPalette({
+            primary: green,
+            accent: red,
+            type: 'dark',
+          }),
+        }),
+      });
+    }
 
-  // We use the react-async-component in order to support code splitting of
-  // our bundle output. It's important to use this helper.
-  // @see https://github.com/ctrlplusb/react-async-component
-  asyncBootstrapper(app).then(() => render(app, container));
+    // // Create a styleManager instance.
+    const { styleManager, theme } = createStyleManager();
+
+    return (
+      <ReactHotLoader>
+        <AsyncComponentProvider rehydrateState={asyncComponentsRehydrateState}>
+          <JobProvider rehydrateState={rehydrateState}>
+            <Provider store={store}>
+              <BrowserRouter forceRefresh={!supportsHistory}>
+                <MuiThemeProvider styleManager={styleManager} theme={theme}>
+                  <TheApp styleManager={styleManager} theme={theme} />
+                </MuiThemeProvider>
+              </BrowserRouter>
+            </Provider>
+          </JobProvider>
+        </AsyncComponentProvider>
+      </ReactHotLoader>
+    );
+
+    // We use the react-async-component in order to support code splitting of
+    // our bundle output. It's important to use this helper.
+    // @see https://github.com/ctrlplusb/react-async-component
+    asyncBootstrapper(app).then(() => render(app, container));
+  }
 }
 
 // Execute the first render of our app.
-renderApp(DemoApp);
+new renderApp(DemoApp);
 
 // This registers our service worker for asset caching and offline support.
 // Keep this as the last item, just in case the code execution failed (thanks

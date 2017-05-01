@@ -6,11 +6,29 @@ import { JobProvider, createJobContext } from 'react-jobs';
 import asyncBootstrapper from 'react-async-bootstrapper';
 import { Provider } from 'react-redux';
 import Helmet from 'react-helmet';
+
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import createPalette from 'material-ui/styles/palette';
+import createMuiTheme from 'material-ui/styles/theme';
+import { green, red } from 'material-ui/styles/colors';
+
 import configureStore from '../../../shared/redux/configureStore';
 
 import config from '../../../config';
 import DemoApp from '../../../shared/components/DemoApp';
 import ServerHTML from './ServerHTML';
+
+function createStyleManager() {
+  return MuiThemeProvider.createDefaultContext({
+    theme: createMuiTheme({
+      palette: createPalette({
+        primary: green,
+        accent: red,
+        type: 'dark',
+      }),
+    }),
+  });
+}
 
 /**
  * React application middleware, supports server side rendering.
@@ -33,6 +51,7 @@ export default function reactApplicationMiddleware(request, response) {
     // SSR is disabled so we will return an "empty" html page and
     // rely on the client to initialize and render the react application.
     const html = renderToStaticMarkup(<ServerHTML nonce={nonce} />);
+
     response.status(200).send(`<!DOCTYPE html>${html}`);
     return;
   }
@@ -51,13 +70,18 @@ export default function reactApplicationMiddleware(request, response) {
   // Create the redux store.
   const store = configureStore();
 
+  // // Create a styleManager instance.
+  const { styleManager, theme } = createStyleManager();
+
   // Declare our React application.
   const app = (
     <AsyncComponentProvider asyncContext={asyncContext}>
       <JobProvider jobContext={jobContext}>
         <StaticRouter location={request.url} context={reactRouterContext}>
           <Provider store={store}>
-            <DemoApp />
+            <MuiThemeProvider styleManager={styleManager} theme={theme}>
+              <DemoApp styleManager={styleManager} theme={theme} />
+            </MuiThemeProvider>
           </Provider>
         </StaticRouter>
       </JobProvider>
