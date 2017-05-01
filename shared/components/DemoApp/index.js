@@ -19,14 +19,14 @@ import AsyncAboutRoute from './AsyncAboutRoute';
 
 class DemoApp extends Component {
   // Remove the server-side injected CSS.
-  // componentDidMount() {
-  //   const jssStyles = document.getElementById('jss-server-side');
-  //   // @TODO - the material-ui themes are rendering server side, but
-  //   // this is clobbered because both client and
-  //   if (jssStyles && jssStyles.parentNode) {
-  //     jssStyles.parentNode.removeChild(jssStyles);
-  //   }
-  // }
+  componentDidMount() {
+    const jssStyles = document.getElementById('jss-server-side');
+    // @TODO - the material-ui themes are rendering server side, but
+    // this is clobbered because both client and
+    if (jssStyles && jssStyles.parentNode) {
+      jssStyles.parentNode.removeChild(jssStyles);
+    }
+  }
 
   render(styleManager = this.props.styleManager, theme = this.props.theme) {
     return (

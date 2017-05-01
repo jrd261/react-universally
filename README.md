@@ -1,3 +1,7 @@
+### Brian's Notes
+
+- The error you see `Warning: Accessing PropTypes via the main React package is deprecated. Use the prop-types package from npm instead.` is known to be OK, and explained in the `react-redux` repository [troubleshooting.md here](https://github.com/reactjs/react-redux/blob/189e27cc8027316d5805da8c518c793960c9abdb/docs/troubleshooting.md#im-getting-the-following-alert-accessing-proptypes-via-the-main-react-package-is-deprecated-use-the-prop-types-package-from-npm-instead)
+
 ### Feature Branch
 
 Note: This is a feature branch of `react-universally`. Please see the [`FEATURE_REDUX_OPINIONATED.md`](/docs/FEATURE_REDUX_OPINIONATED.md) for more information on this branch.

@@ -3,6 +3,9 @@ import Helmet from 'react-helmet';
 
 import config from '../../../../config';
 
+import BasicTable from '../BasicTable';
+import FloatingActionButtons from '../FloatingActionButtons';
+
 function HomeRoute() {
   return (
     <div>
@@ -18,6 +21,10 @@ function HomeRoute() {
         minimal project set up allowing you to make your own architecture
         decisions (Redux/Mobx etc).
       </p>
+
+      <FloatingActionButtons />
+
+      <BasicTable />
     </div>
   );
 }
